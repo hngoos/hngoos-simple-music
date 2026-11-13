@@ -1,37 +1,42 @@
-# HSM verification ledger
+# HSM 0.1.0 verification
 
-Last updated: November 13, 2026. Initial version: 0.1.0.
+Last updated: November 13, 2026. Verified application source: `3076a4f585447945e32c4e1952939f426d58cf09`.
 
-## Evidence so far
+## Automated and packaging evidence
 
-- `:domain:jvmTest :desktopApp:compileKotlinJvm`: BUILD SUCCESSFUL on Windows (3m36s), before final review fixes.
-- Six CSV/TSV parsing/recording-matching cases passed.
-- Three managed local audio file tests passed: copy independence, content identity, unsupported/missing files.
-- Three encoding cases passed: UTF-8 BOM, UTF-16 LE/BE including Vietnamese and surrogate pairs, truncated UTF-16 rejection.
-- Logo SVG rendered and PNG/ICO/ICNS generated; PNG visually inspected.
+- Final Windows `:domain:jvmTest :media-jvm:compileKotlin`: **BUILD SUCCESSFUL** (10 seconds); 43 JVM tests, zero failures/errors. Coverage includes quoted CSV/TSV, Unicode and UTF-16 documents, recording matching, duplicate/unmatched handling, managed audio copies and local download state.
+- Final Windows `:desktopApp:createDistributable :desktopApp:packageMsi`: **BUILD SUCCESSFUL** (2 minutes 1 second), including the final guard against sending local download requests to YouTube.
+- Windows MSI metadata inspected read-only: product HSM, version 0.1.0, manufacturer hngoos, independent upgrade code `{66E00F47-54F0-4ABE-AF27-6D955C648BCD}`.
+- Local Windows installer SHA-256: `1033eff1144272f59442da907a31010395c0b76e5a79819660b7bec4e9c2bfac`. The uploaded draft asset has the same GitHub-reported digest.
+- [Native build run 43434019263](https://github.com/hngoos/hngoos-simple-music/actions/runs/43434019263): tests and native installer builds succeeded on Windows x64, macOS Apple Silicon and macOS Intel. Each platform produced its installer and test report artifacts.
+- Resource XML files parsed; generated PNG/ICO/ICNS assets validated; logo and actual player screenshot visually inspected. Source diff whitespace checks passed.
+- Independent source review completed and actionable findings resolved, including overlay gesture handling and local-provider URI boundaries.
 
-- Full-window player launched on Windows; YouTube audio played, timed lyrics rendered and lyric clicks sought playback ("a thousand years").
-- Imported a real 30-second WAV through the native file picker and played the managed copy after moving its source.
-- `:domain:jvmTest :desktopApp:packageMsi`: BUILD SUCCESSFUL (5m35s); 42 JVM tests, zero failures/errors. A final rebuild includes the last local-provider guards.
+## Actual Windows application checks
 
-- Native UTF-16 Apple-format TSV imported through the file picker: three ordered entries including a duplicate, one intentionally unavailable track retained and reported; two known entries matched YouTube with no lookup failures.
+- YouTube audio played; synchronized lyrics appeared for “a thousand years”; clicking a lyric sought playback.
+- Large current artwork rendered on the left and lyrics on the right. Seek dragging worked, and the full-window listening overlay prevented clicks reaching underlying navigation.
+- Controls remained usable at 1000×720; the compact 780×700 layout scrolled to transport and lyrics.
+- A real 30-second WAV imported through the native file picker played from HSM's managed copy after its original file moved.
+- A native UTF-16 Apple-format TSV imported three ordered entries with a duplicate and an intentionally unavailable track. Both known entries matched YouTube; the unmatched entry remained visible and was reported; there were no network lookup failures.
+- Read-only SQLite inspection confirmed positions 0, 1, 2, the duplicate recording IDs and the unresolved middle entry.
 
-- Read-only SQLite inspection confirmed imported playlist positions 0, 1, 2 and both duplicate recording IDs remained in order, including the unresolved middle entry.
+## Publication
 
-- Final `:domain:jvmTest :desktopApp:createDistributable :desktopApp:packageMsi`: BUILD SUCCESSFUL (4m37s), 42 JVM tests, zero failures/errors.
-- Final native launch and slider dragging checked; the listening overlay owns hit testing without consuming child gestures.
+- [GitHub source](https://github.com/hngoos/hngoos-simple-music) contains the vendored core and retained upstream history/licenses.
+- Separate `dev-hngoos-simple-music` and `repo-hngoos-simple-music` checkouts exist. The publication checkout was verified against the pushed application commit.
+- HSM 0.1.0 is a **draft prerelease**. It has not been published publicly. Final installer assets and their digests are listed below.
 
-## Remaining platform verification
-
-- Windows MSI and macOS Intel/Apple Silicon packaging through native GitHub runners.
-- Fresh source review completed; all important findings resolved, including pointer handling and local-provider URI boundaries.
+| Draft asset | SHA-256 |
+| --- | --- |
+| `HSM-0.1.0-windows-x64.msi` | `1033eff1144272f59442da907a31010395c0b76e5a79819660b7bec4e9c2bfac` |
+| `HSM-0.1.0-macos-arm64.dmg` | `c0b6e5d620ded79e2295bd04ae17478ba3bc4045cfc0d6b8f6fa79f8a3c1da94` |
+| `HSM-0.1.0-macos-x64.dmg` | `ce48c3e1238c0dc19fd681b7c901681aa0c59e21099d754bb63aae122791f5ba` |
 
 ## Capability boundaries
 
-- Spotify/Apple imports use exported playlist metadata; account OAuth and arbitrary private playlist URLs are not implemented.
+- Spotify/Apple imports use exported playlist metadata; account OAuth and arbitrary private playlist URLs are not implemented. Imported entries are matched to YouTube recordings; catalog equivalence is not guaranteed.
 - Local audio metadata comes from filenames; embedded tags/artwork and directory scanning are not implemented.
-- Native YouTube sign-in/playlist access, network playback, downloads and lyric providers are inherited integrations and require live service verification.
-- macOS cannot be launched or visually verified on this Windows host. Packaging CI is separate evidence from runtime testing on a Mac.
-- Installers are unsigned/not notarized until distribution certificates are configured.
-
-Do not infer a completed installer or verified service from the presence of source or workflow files. This ledger is updated with final build results before publishing source.
+- Native YouTube sign-in/library, downloads and lyric providers are inherited integrations. Windows playback and the lyric/import checks above are live evidence; not every upstream service or account flow was independently exercised.
+- macOS cannot be launched or visually verified on this Windows host. Native packaging CI is separate evidence from runtime testing on a Mac.
+- Official signing/notarization is not configured.

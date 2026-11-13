@@ -38,7 +38,7 @@ for reproducible icon assets, GitHub Actions for platform verification.
 - [x] Add HSM identity defaults and rebrand UI strings without renaming providers.
 - [x] Isolate desktop storage, protocol, updates and package metadata.
 - [x] Generate HSM SVG, PNG, ICO, ICNS from HDM's original H.
-- [ ] Review diff, validate assets and commit the identity slice.
+- [x] Review diff, validate assets and commit the identity slice.
 
 ### 2. Implement the desktop listening experience
 
@@ -46,7 +46,7 @@ for reproducible icon assets, GitHub Actions for platform verification.
 - [x] Introduce a responsive two-column desktop Now Playing layout as default.
 - [x] Keep seek, queue, volume, favorite, shuffle, repeat and lyric fallback usable.
 - [x] Test layout decisions and verify compilation/launch/screenshots.
-- [ ] Commit the player slice.
+- [x] Commit the player slice (included in the reviewed desktop implementation commit).
 
 ### 3. Complete playlist and local/offline flows
 
@@ -54,7 +54,7 @@ for reproducible icon assets, GitHub Actions for platform verification.
 - [x] Add tested CSV/TSV normalization and conservative YouTube matching.
 - [x] Expose import progress, cancellation and unmatched-track recovery.
 - [x] Preserve native YouTube and converted JSON imports.
-- [ ] Verify parser/matcher cases and integration, commit the import slice.
+- [x] Verify parser/matcher cases and integration, commit the import slice.
 
 ### 4. Publish reviewable source and build distributions
 
@@ -62,7 +62,7 @@ for reproducible icon assets, GitHub Actions for platform verification.
 - [x] Write HSM README, notices and truthful build/release instructions.
 - [x] Run focused tests and final release verification; fix evidenced failures.
 - [x] Review whole change with a fresh reviewer and resolve actionable findings.
-- [ ] Create GitHub repo, push verified source, clone repo directory and verify parity.
-- [ ] Build native distributions where possible; report precise remaining blockers.
+- [x] Create GitHub repo, push verified source, clone repo directory and verify parity.
+- [x] Build Windows x64 and macOS Intel/Apple Silicon distributions on native runners; retain draft status and report runtime/signing limits.
 
-Execution evidence is recorded in `docs/VERIFICATION.md`; native macOS verification remains pending GitHub runners.
+Execution evidence is recorded in `docs/VERIFICATION.md`. All three native installer builds succeeded. Windows playback and UI were exercised directly; macOS runtime testing and official signing/notarization remain unverified or unconfigured, as recorded in the ledger.
