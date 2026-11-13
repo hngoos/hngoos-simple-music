@@ -80,6 +80,7 @@ import com.maxrave.simpmusic.ui.component.LiquidGlassAppBottomNavigationBar
 import com.maxrave.simpmusic.ui.component.LocalAppDialogOpen
 import com.maxrave.simpmusic.ui.component.LocalNowPlayingOpen
 import com.maxrave.simpmusic.ui.component.LocalUserStarted
+import com.maxrave.simpmusic.ui.icon.KeyboardArrowDown
 import com.maxrave.simpmusic.ui.icon.ArrowForwardIos
 import com.maxrave.simpmusic.ui.icon.SimpIcons
 import com.maxrave.simpmusic.ui.navigation.destination.home.AnalyticsDestination
@@ -789,7 +790,7 @@ fun App(
                                 tabletMiniPlayer(Modifier.padding(innerPadding).align(Alignment.BottomCenter))
                             }
                         }
-                        if (isTablet && isTabletLandscape && !isInFullscreen) {
+                        if (isTablet && isTabletLandscape && !isInFullscreen && !isDesktopShell) {
                             AnimatedVisibility(
                                 isShowNowPlaylistScreen,
                                 enter = expandHorizontally() + fadeIn(),
@@ -860,7 +861,23 @@ fun App(
                     }
                 }
 
-                if (isShowNowPlaylistScreen && !isTabletLandscape) {
+                if (isShowNowPlaylistScreen && isDesktopShell) {
+                    Box(Modifier.fillMaxSize().padding(8.dp).clip(RoundedCornerShape(12.dp)).background(desktopPanel).pointerInput(Unit) {
+                        awaitPointerEventScope {
+                            while (true) awaitPointerEvent()
+                        }
+                    }) {
+                        NowPlayingScreenContent(
+                            navController = navController,
+                            sharedViewModel = viewModel,
+                            isExpanded = true,
+                            dismissIcon = SimpIcons.KeyboardArrowDown,
+                            onDismiss = { isShowNowPlaylistScreen = false },
+                        )
+                    }
+                }
+
+                if (isShowNowPlaylistScreen && !isTabletLandscape && !isDesktopShell) {
                     ForceDarkContent {
                         NowPlayingScreen(
                             navController = navController,
@@ -923,7 +940,7 @@ fun App(
                                 onClick = {
                                     shouldShowUpdateDialog = false
                                     viewModel.showedUpdateDialog = false
-                                    openUrl("https://simpmusic.org/download")
+                                    openUrl("https://github.com/hngoos/hngoos-simple-music/releases")
                                 },
                             ) {
                                 Text(

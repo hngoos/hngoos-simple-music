@@ -128,9 +128,9 @@ tasks.named<hydraulic.conveyor.gradle.WriteConveyorConfigTask>("writeConveyorCon
     doLast {
         destination.get().asFile.appendText(
             """
-            |app.fsname = simpmusic
-            |app.display-name = SimpMusic
-            |app.rdns-name = com.maxrave.simpmusic
+            |app.fsname = hsm
+            |app.display-name = Hngoos Simple Music
+            |app.rdns-name = com.hngoos.hsm
             |
             |// Override the Gradle-detected classpath with the ProGuard'd
             |// jar directory. Conveyor expands a directory entry to every
@@ -152,23 +152,13 @@ compose.desktop {
 
         nativeDistributions {
             appResourcesRootDir = rootDir.resolve("mpv-natives/")
-            val listTarget = mutableListOf<TargetFormat>()
-            if (org.gradle.internal.os.OperatingSystem
-                    .current()
-                    .isMacOsX
-            ) {
-                listTarget.addAll(
-                    listOf(TargetFormat.Dmg, TargetFormat.Msi),
-                )
-            } else {
-                listTarget.addAll(
-                    listOf(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.AppImage),
-                )
-            }
-            targetFormats(*listTarget.toTypedArray())
+            targetFormats(TargetFormat.Msi, TargetFormat.Dmg)
             modules("jdk.unsupported")
-            packageName = "SimpMusic"
+            packageName = "HSM"
+            description = "Hngoos Simple Music"
+            vendor = "hngoos"
             macOS {
+                bundleID = "com.hngoos.hsm"
                 val formatedDate =
                     Instant.now().let {
                         DateTimeFormatter
@@ -195,10 +185,10 @@ compose.desktop {
                             <key>CFBundleTypeRole</key>
                             <string>Viewer</string>
                             <key>CFBundleURLName</key>
-                            <string>com.maxrave.simpmusic.deeplink</string>
+                            <string>com.hngoos.hsm.deeplink</string>
                             <key>CFBundleURLSchemes</key>
                             <array>
-                                <string>simpmusic</string>
+                                <string>hsm</string>
                             </array>
                         </dict>
                     </array>
@@ -208,6 +198,8 @@ compose.desktop {
                 }
             }
             windows {
+                upgradeUuid = "66e00f47-54f0-4abe-af27-6d955c648bcd"
+                menuGroup = "Hngoos Simple Music"
                 includeAllModules = true
                 packageVersion =
                     libs.versions.version.name

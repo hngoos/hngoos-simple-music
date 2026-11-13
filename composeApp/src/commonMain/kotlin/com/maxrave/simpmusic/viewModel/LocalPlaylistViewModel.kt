@@ -787,6 +787,7 @@ class LocalPlaylistViewModel(
             is LocalPlaylistUIEvent.ItemClick -> {
                 val loadedList = lazyTrackPagingItems.value?.itemSnapshotList?.toList() ?: return
                 val clickedSong = loadedList.find { it?.first?.videoId == ev.videoId }?.first ?: return
+                if (clickedSong.videoId.startsWith("hsm-unmatched:")) return
 
                 setQueueData(
                     QueueData.Data(
@@ -826,7 +827,7 @@ class LocalPlaylistViewModel(
                 loadMediaItem(
                     clickedSong,
                     Config.PLAYLIST_CLICK,
-                    loadedList.map { it?.first }.indexOf(clickedSong),
+                    loadedList.mapNotNull { it?.first }.filterNot { it.videoId.startsWith("hsm-unmatched:") }.indexOf(clickedSong),
                 )
             }
 
@@ -864,7 +865,10 @@ class LocalPlaylistViewModel(
                         return
                     }
 
-                val firstPlayTrack = loadedList.firstOrNull()?.first?.toTrack()
+                val firstPlayTrack = loadedList.firstOrNull { it?.first?.videoId?.startsWith("hsm-unmatched:") == false }?.first?.toTrack() ?: run {
+                    makeToast(getString(Res.string.playlist_is_empty))
+                    return
+                }
                 setQueueData(
                     QueueData.Data(
                         listTracks = loadedList.mapNotNull { it?.first }.toArrayListTrack(),
@@ -913,7 +917,7 @@ class LocalPlaylistViewModel(
 
             is LocalPlaylistUIEvent.ShuffleClick -> {
                 viewModelScope.launch {
-                    val listVideoId = localPlaylistRepository.getListTrackVideoId(uiState.value.id)
+                    val listVideoId = localPlaylistRepository.getListTrackVideoId(uiState.value.id).filterNot { it.startsWith("hsm-unmatched:") }
                     log("ShuffleClick: uiState id ${uiState.value.id}")
                     log("ShuffleClick: $listVideoId")
                     if (listVideoId.isEmpty()) {

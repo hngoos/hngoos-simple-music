@@ -183,7 +183,7 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
         return
     }
     // Past the guard on purpose: a second instance must not open the same log files.
-    Logger.enableFileLogging(getHomeFolderPath(listOf(".simpmusic", "logs")))
+    Logger.enableFileLogging(getHomeFolderPath(listOf(".hsm", "logs")))
 
     // First instance only: deliver our own deep link (non-macOS passes URI via args).
     if (!isMacOS) {
@@ -197,7 +197,7 @@ fun runDesktopApp(args: Array<String> = emptyArray()) {
     startKoin {
         loadAllModules(
             AppIdentity(
-                applicationId = "com.maxrave.simpmusic",
+                applicationId = "com.hngoos.hsm",
                 versionName = BuildKonfig.versionName,
                 platform = "${System.getProperty("os.name")} ${System.getProperty("os.version")}",
                 // Set by desktopApp's JavaExec tasks (run, hotRunJvm); a packaged install never has it.

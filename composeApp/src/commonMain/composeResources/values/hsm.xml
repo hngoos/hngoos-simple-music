@@ -1,0 +1,18 @@
+<resources>
+    <string name="hsm_now_playing">Now playing</string>
+    <string name="hsm_close_player">Close player</string>
+    <string name="hsm_album_artwork">Current album artwork</string>
+    <string name="hsm_queue">Up next</string>
+    <string name="hsm_volume">Volume</string>
+    <string name="hsm_lyrics_loading">Finding the words…</string>
+    <string name="hsm_lyrics_empty">Lyrics are not available for this song.\nEnjoy the music.</string>
+    <string name="hsm_import_matching">Finding YouTube versions: %1$d of %2$d</string>
+    <string name="hsm_import_unmatched">%1$d tracks need a source. Their names and positions are kept in your playlist.</string>
+    <string name="hsm_bring_music">Your music, together.</string>
+    <string name="hsm_import_hint">Import Spotify CSV, Apple Music/iTunes TSV or SimpMusic JSON playlists. HSM finds the matching YouTube recordings and keeps tracks it cannot match. YouTube playlists are available in Library after signing in. You can also choose a local audio file; HSM keeps a copy for offline playback.</string>
+    <string name="hsm_choose_file">Import playlist or audio</string>
+    <string name="hsm_source_needed">Choose a recording</string>
+    <string name="hsm_source_needed_hint">This track has no matched recording yet. Search by its title and artist, then add the recording you want to this playlist. The original entry stays in place until you remove it.</string>
+    <string name="hsm_search_recording">Search recordings</string>
+    <string name="hsm_import_lookup_failures">%1$d lookups could not reach YouTube. The original tracks are kept; you can search again later.</string>
+</resources>

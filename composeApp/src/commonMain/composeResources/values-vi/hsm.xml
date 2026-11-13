@@ -1,0 +1,18 @@
+<resources>
+    <string name="hsm_now_playing">Đang phát</string>
+    <string name="hsm_close_player">Đóng trình phát</string>
+    <string name="hsm_album_artwork">Ảnh bìa album đang phát</string>
+    <string name="hsm_queue">Tiếp theo</string>
+    <string name="hsm_volume">Âm lượng</string>
+    <string name="hsm_lyrics_loading">Đang tìm lời bài hát…</string>
+    <string name="hsm_lyrics_empty">Chưa có lời cho bài hát này.\nHãy tận hưởng âm nhạc.</string>
+    <string name="hsm_import_matching">Đang tìm bản trên YouTube: %1$d / %2$d</string>
+    <string name="hsm_import_unmatched">%1$d bài chưa có nguồn phát. Tên và vị trí của chúng vẫn được giữ trong playlist.</string>
+    <string name="hsm_bring_music">Âm nhạc của bạn, cùng một nơi.</string>
+    <string name="hsm_import_hint">Nhập playlist Spotify CSV, Apple Music/iTunes TSV hoặc SimpMusic JSON. HSM tìm bản ghi tương ứng trên YouTube và giữ lại bài chưa khớp. Playlist YouTube xuất hiện trong Thư viện sau khi đăng nhập. Bạn cũng có thể chọn file nhạc trên máy; HSM giữ một bản sao để nghe ngoại tuyến.</string>
+    <string name="hsm_choose_file">Nhập playlist hoặc file nhạc</string>
+    <string name="hsm_source_needed">Chọn bản ghi</string>
+    <string name="hsm_source_needed_hint">Bài này chưa tìm được bản ghi tương ứng. Tìm theo tên bài và nghệ sĩ, sau đó thêm bản ghi bạn muốn vào playlist này. Mục gốc được giữ nguyên cho đến khi bạn xóa.</string>
+    <string name="hsm_search_recording">Tìm bản ghi</string>
+    <string name="hsm_import_lookup_failures">%1$d lượt tìm không kết nối được YouTube. Bài gốc vẫn được giữ lại; bạn có thể tìm lại sau.</string>
+</resources>

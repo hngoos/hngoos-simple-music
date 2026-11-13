@@ -450,6 +450,8 @@ fun HomeScreen(
         }
     }
     LaunchedEffect(openAppTime, shareLyricsPermissions) {
+        // Desktop contribution controls remain in Settings; do not interrupt listening with promos.
+        if (getPlatform() == Platform.Desktop) return@LaunchedEffect
         Logger.w("HomeScreen", "openAppTime: $openAppTime, shareLyricsPermissions: $shareLyricsPermissions")
         if (openAppTime >= 10 && openAppTime % 10 == 0 && openAppTime <= 50) {
             showReviewDialog = true
@@ -577,7 +579,7 @@ fun HomeScreen(
     // started at launch, however long that takes, so an update dialog comes first. Then it takes the
     // first banner this version has not shown yet.
     LaunchedEffect(Unit) {
-        if (promoLaunchDecided) return@LaunchedEffect
+        if (getPlatform() == Platform.Desktop || promoLaunchDecided) return@LaunchedEffect
         // Marked at the start, not the end: leaving Home cancels this for good (by then the user is
         // busy elsewhere), and a value written while Home is being left would not be saved.
         promoLaunchDecided = true

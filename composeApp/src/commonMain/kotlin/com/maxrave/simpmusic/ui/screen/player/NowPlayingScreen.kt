@@ -80,6 +80,7 @@ import com.maxrave.simpmusic.extension.rememberIsInPipMode
 import com.maxrave.simpmusic.getPlatform
 import com.maxrave.simpmusic.ui.component.AddLyricsSheet
 import com.maxrave.simpmusic.ui.component.AddToPlaylistModalBottomSheet
+import com.maxrave.simpmusic.ui.screen.player.content.HsmDesktopPlayer
 import com.maxrave.simpmusic.ui.component.FullscreenLyricsContent
 import com.maxrave.simpmusic.ui.component.FullscreenLyricsSheet
 import com.maxrave.simpmusic.ui.component.CommentsBottomSheet
@@ -212,7 +213,7 @@ fun NowPlayingScreenContent(
     // Which Now Playing style renders the content layer (Settings → Now Playing style).
     val nowPlayingStyle by sharedViewModel
         .getNowPlayingStyle()
-        .collectAsStateWithLifecycle(initialValue = DataStoreManager.NOW_PLAYING_STYLE_SPOTIFY)
+        .collectAsStateWithLifecycle(initialValue = DataStoreManager.NOW_PLAYING_STYLE_APPLE_MUSIC)
 
     // Artwork Pager state — Spotify-style horizontal swipe between queue tracks.
     // The pager wraps the Canvas + Thumbnail layers. Controller layout below stays fixed.
@@ -983,6 +984,11 @@ fun NowPlayingScreenContent(
                 showVoteDialog = false
             },
         )
+    }
+
+    if (getPlatform() == Platform.Desktop && !state.shouldShowVideo) {
+        HsmDesktopPlayer(state = state, actions = actions)
+        return
     }
 
     when (nowPlayingStyle) {

@@ -73,6 +73,7 @@ import com.maxrave.simpmusic.ui.component.GridLibraryPlaylist
 import com.maxrave.simpmusic.ui.component.LibraryItem
 import com.maxrave.simpmusic.ui.component.LibraryItemState
 import com.maxrave.simpmusic.ui.component.LibraryItemType
+import com.maxrave.simpmusic.ui.component.HsmLibraryImport
 import com.maxrave.simpmusic.ui.component.LibraryTilingBox
 import com.maxrave.simpmusic.ui.component.taste.ShareTasteSheet
 import com.maxrave.simpmusic.ui.component.taste.TasteCard
@@ -278,6 +279,14 @@ fun LibraryScreen(
                             ),
                         state = state,
                     ) {
+                        if (getPlatform() == Platform.Desktop) {
+                            item(key = "hsm-import") {
+                                HsmLibraryImport {
+                                    viewModel.getRecentlyAdded()
+                                    viewModel.getLocalPlaylist()
+                                }
+                            }
+                        }
                         item {
                             LibraryTilingBox(navController, libraryOverview, cachedPreview)
                         }

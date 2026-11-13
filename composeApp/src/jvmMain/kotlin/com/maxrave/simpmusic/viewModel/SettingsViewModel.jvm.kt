@@ -27,7 +27,7 @@ import kotlin.system.exitProcess
 
 actual suspend fun calculateDataFraction(cacheRepository: CacheRepository): SettingsStorageSectionFraction? = null
 
-actual suspend fun readPickedFile(uri: Uri): ByteArray = File(uri.toString()).readBytes()
+actual suspend fun readPickedFile(uri: Uri): ByteArray = com.maxrave.domain.importing.LocalAudioLibrary.pickedFile(uri.toString()).also { require(it.length() <= 20_000_000) { "Playlist files must be smaller than 20 MB." } }.readBytes()
 
 actual suspend fun restoreNative(
     commonRepository: CommonRepository,
@@ -47,7 +47,7 @@ actual suspend fun restoreNative(
             Logger.d("BackupRestore", "Processing entry: ${entry.name}")
             when {
                 entry.name == "$SETTINGS_FILENAME.preferences_pb" -> {
-                    File(getHomeFolderPath(listOf(".simpmusic")), "$SETTINGS_FILENAME.preferences_pb")
+                    File(getHomeFolderPath(listOf(".hsm")), "$SETTINGS_FILENAME.preferences_pb")
                         .outputStream()
                         .use { outputStream ->
                             inputStream.copyTo(outputStream)
@@ -82,7 +82,7 @@ actual suspend fun backupNative(
 ) {
     FileOutputStream(File(uri.toString())).use {
         it.buffered().zipOutputStream().use { outputStream ->
-            File(getHomeFolderPath(listOf(".simpmusic")), "$SETTINGS_FILENAME.preferences_pb")
+            File(getHomeFolderPath(listOf(".hsm")), "$SETTINGS_FILENAME.preferences_pb")
                 .inputStream()
                 .buffered()
                 .use { inputStream ->

@@ -174,6 +174,8 @@ import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import simpmusic.composeapp.generated.resources.hsm_import_matching
+import simpmusic.composeapp.generated.resources.hsm_import_unmatched
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.base_url
 import simpmusic.composeapp.generated.resources.configured
@@ -279,7 +281,8 @@ import simpmusic.composeapp.generated.resources.help_build_lyrics_database
 import simpmusic.composeapp.generated.resources.help_build_lyrics_database_description
 import simpmusic.composeapp.generated.resources.http
 import simpmusic.composeapp.generated.resources.import_data
-import simpmusic.composeapp.generated.resources.import_data_intro
+import simpmusic.composeapp.generated.resources.hsm_import_lookup_failures
+import simpmusic.composeapp.generated.resources.hsm_import_hint
 import simpmusic.composeapp.generated.resources.import_failed
 import simpmusic.composeapp.generated.resources.import_playlists_from_other_apps
 import simpmusic.composeapp.generated.resources.import_progress_songs
@@ -2561,23 +2564,7 @@ fun SettingScreen(
             SettingGroup(
                 title = stringResource(Res.string.backup),
                 footer = {
-                    val beforeUrl = stringResource(Res.string.import_data_intro).substringBefore("https://www.simpmusic.org/tools")
-                    val afterUrl = stringResource(Res.string.import_data_intro).substringAfter("https://www.simpmusic.org/tools")
-                    Text(
-                        buildAnnotatedString {
-                            append(beforeUrl)
-                            withLink(
-                                LinkAnnotation.Url(
-                                    "https://www.simpmusic.org/tools",
-                                    TextLinkStyles(style = SpanStyle(color = MaterialTheme.colorScheme.primary)),
-                                ),
-                            ) {
-                                append("https://www.simpmusic.org/tools")
-                            }
-                            append(afterUrl)
-                        },
-                        style = typo().bodySmall,
-                    )
+                    Text(stringResource(Res.string.hsm_import_hint), style = typo().bodySmall)
                 },
             ) {
                 SettingItem(
@@ -2741,7 +2728,7 @@ fun SettingScreen(
                         if (updateChannel == DataStoreManager.FDROID) {
                             "F-Droid"
                         } else {
-                            "SimpMusic GitHub Release"
+                            "HSM GitHub Release"
                         },
                     onClick = {
                         viewModel.setAlertData(
@@ -2752,7 +2739,7 @@ fun SettingScreen(
                                         listSelect =
                                             listOf(
                                                 (updateChannel == DataStoreManager.FDROID) to "F-Droid",
-                                                (updateChannel == DataStoreManager.GITHUB) to "SimpMusic GitHub Release",
+                                                (updateChannel == DataStoreManager.GITHUB) to "HSM GitHub Release",
                                             ),
                                     ),
                                 confirm =
@@ -2760,7 +2747,7 @@ fun SettingScreen(
                                         viewModel.setUpdateChannel(
                                             when (state.selectOne?.getSelected()) {
                                                 "F-Droid" -> DataStoreManager.FDROID
-                                                "SimpMusic GitHub Release" -> DataStoreManager.GITHUB
+                                                "HSM GitHub Release" -> DataStoreManager.GITHUB
                                                 else -> DataStoreManager.GITHUB
                                             },
                                         )
@@ -3498,7 +3485,7 @@ private fun SettingTopBar(
  * half-populated with no way to tell the user which half.
  */
 @Composable
-private fun ImportProgressDialog(
+internal fun ImportProgressDialog(
     progress: ImportProgress,
     onDismiss: () -> Unit,
 ) {
@@ -3531,6 +3518,15 @@ private fun ImportProgressDialog(
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
 
+                    is ImportProgress.Resolving -> {
+                        Text(stringResource(Res.string.hsm_import_matching, progress.processed, progress.total), style = typo().bodyMedium)
+                        Spacer(Modifier.height(12.dp))
+                        LinearProgressIndicator(
+                            progress = { if (progress.total > 0) progress.processed.toFloat() / progress.total else 0f },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+
                     is ImportProgress.Importing -> {
                         Text(
                             text = stringResource(Res.string.import_progress_songs, progress.processed, progress.total),
@@ -3555,6 +3551,16 @@ private fun ImportProgressDialog(
                                 ),
                             style = typo().bodyMedium,
                         )
+                        if (progress.result.lookupFailures > 0) {
+                            Spacer(Modifier.height(8.dp))
+                            Text(stringResource(Res.string.hsm_import_lookup_failures, progress.result.lookupFailures), style = typo().bodySmall)
+                        }
+                        if (progress.result.unmatchedTracks.isNotEmpty()) {
+                            Spacer(Modifier.height(12.dp))
+                            Text(stringResource(Res.string.hsm_import_unmatched, progress.result.unmatchedTracks.size), style = typo().bodySmall)
+                            Spacer(Modifier.height(8.dp))
+                            Text(progress.result.unmatchedTracks.take(8).joinToString("\n"), style = typo().bodySmall)
+                        }
                         if (progress.result.skippedEntries > 0) {
                             Spacer(Modifier.height(8.dp))
                             Text(
@@ -3572,6 +3578,9 @@ private fun ImportProgressDialog(
                     }
                 }
             }
+        },
+        dismissButton = {
+            if (!finished) TextButton(onClick = onDismiss) { Text(stringResource(Res.string.cancel)) }
         },
         confirmButton = {
             if (finished) {

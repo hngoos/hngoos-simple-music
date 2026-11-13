@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -111,6 +112,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import simpmusic.composeapp.generated.resources.app_icon
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.album
 import simpmusic.composeapp.generated.resources.albums
@@ -318,6 +320,14 @@ fun DesktopSidebar(
                 Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 2.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
+                Row(
+                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Image(painterResource(Res.drawable.app_icon), "HSM", Modifier.size(32.dp))
+                    if (!collapsed) Text("HSM", style = typo().titleLarge, fontWeight = FontWeight.Bold)
+                }
                 navScreens.forEach { screen ->
                     SidebarNavRow(
                         backdrop = backdrop,

@@ -190,6 +190,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import com.maxrave.simpmusic.ui.navigation.destination.search.SearchDestination
+import simpmusic.composeapp.generated.resources.hsm_source_needed
+import simpmusic.composeapp.generated.resources.hsm_source_needed_hint
+import simpmusic.composeapp.generated.resources.hsm_search_recording
 import simpmusic.composeapp.generated.resources.Res
 import simpmusic.composeapp.generated.resources.album_length
 import simpmusic.composeapp.generated.resources.baseline_downloaded
@@ -325,12 +329,27 @@ fun LocalPlaylistScreen(
         }
     }
 
-    val onPlaylistItemClick: (videoId: String) -> Unit = { videoId ->
-        viewModel.onUIEvent(
-            LocalPlaylistUIEvent.ItemClick(
-                videoId = videoId,
-            ),
+    var unresolvedSong by remember { mutableStateOf<SongEntity?>(null) }
+    unresolvedSong?.let { song ->
+        AlertDialog(
+            onDismissRequest = { unresolvedSong = null },
+            title = { Text(stringResource(Res.string.hsm_source_needed)) },
+            text = { Text("${song.title} · ${song.artistName.orEmpty().joinToString(", ")}\n\n" + stringResource(Res.string.hsm_source_needed_hint)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    sharedViewModel.requestSearch("${song.title} ${song.artistName.orEmpty().joinToString(" ")}")
+                    unresolvedSong = null
+                    navController.navigate(SearchDestination)
+                }) { Text(stringResource(Res.string.hsm_search_recording)) }
+            },
         )
+    }
+    val onPlaylistItemClick: (videoId: String) -> Unit = { videoId ->
+        if (videoId.startsWith("hsm-unmatched:")) {
+            unresolvedSong = trackPagingItems.itemSnapshotList.find { it?.first?.videoId == videoId }?.first
+        } else {
+            viewModel.onUIEvent(LocalPlaylistUIEvent.ItemClick(videoId = videoId))
+        }
     }
     val onItemMoreClick: (videoId: String) -> Unit = { videoId ->
         currentItem = trackPagingItems.itemSnapshotList.findLast { it?.first?.videoId == videoId }?.first

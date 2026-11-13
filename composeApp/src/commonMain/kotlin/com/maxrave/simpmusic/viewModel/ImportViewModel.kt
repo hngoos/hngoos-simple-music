@@ -6,6 +6,9 @@ import com.maxrave.domain.repository.ImportProgress
 import com.maxrave.domain.repository.ImportRepository
 import com.maxrave.logger.LogLevel
 import com.maxrave.simpmusic.viewModel.base.BaseViewModel
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,10 +44,13 @@ class ImportViewModel(
                 val invalidFileMessage = getString(Res.string.import_invalid_file)
                 val json =
                     withContext(Dispatchers.IO) {
-                        runCatching { readPickedFile(uri).decodeToString() }
+                        runCatching {
+                            importLocalAudio(uri)?.let { Json.encodeToString(it) } ?: com.maxrave.domain.importing.PlaylistDocument.decode(readPickedFile(uri))
+                        }
                     }.getOrElse { throwable ->
+                        if (throwable is CancellationException) throw throwable
                         log("import: cannot read picked file - ${throwable.message}", LogLevel.WARN)
-                        _importState.value = ImportProgress.Error(invalidFileMessage)
+                        _importState.value = ImportProgress.Error(throwable.message ?: invalidFileMessage)
                         return@launch
                     }
                 importRepository.import(json, invalidFileMessage).collect { progress ->

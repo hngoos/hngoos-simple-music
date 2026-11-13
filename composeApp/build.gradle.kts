@@ -35,6 +35,7 @@ plugins {
 // Force it to `always` so `Res` is generated for this app module.
 compose.resources {
     generateResClass = always
+    packageOfResClass = "simpmusic.composeapp.generated.resources"
 }
 
 kotlin {
@@ -709,7 +710,13 @@ val mpvSetupLinuxCi by tasks.registering {
 // mpv bump and would otherwise sit in the release list users browse for the app itself.
 val mpvNativesRepo = "maxrave-dev/simpmusic-files"
 val mpvNativesTag = "abc"
-val mpvSlices = listOf("linux-x64", "macos-arm64", "macos-x64", "windows-x64", "windows-arm64")
+val availableMpvSlices = listOf("linux-x64", "macos-arm64", "macos-x64", "windows-x64", "windows-arm64")
+val requestedMpvSlices = providers.gradleProperty("hsmNativeTargets").orNull?.split(",")
+val mpvSlices = requestedMpvSlices?.also { requested ->
+    require(requested.isNotEmpty() && requested.all { it in availableMpvSlices }) {
+        "hsmNativeTargets must contain supported native slice names: $availableMpvSlices"
+    }
+} ?: availableMpvSlices
 
 val mpvBundleAll by tasks.registering {
     group = "mpv-bundle"
@@ -777,6 +784,7 @@ val mpvSetupAll by tasks.registering {
     val outputRoot = rootDir.resolve("mpv-natives")
     // Without declared inputs Gradle treats an existing output directory as up to date, so bumping
     // the tag or the mpv version would silently keep shipping the previous natives.
+    inputs.property("hsmNativeTargets", mpvSlices)
     inputs.property("mpvNativesTag", mpvNativesTag)
     inputs.property("mpvNativesChecksums", mpvNativesChecksums)
     outputs.dir(outputRoot)

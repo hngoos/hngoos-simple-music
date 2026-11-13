@@ -196,6 +196,17 @@ fun SearchScreen(
     var isSearchSubmitted by rememberSaveable { mutableStateOf(false) }
     var isExpanded by rememberSaveable { mutableStateOf(false) }
 
+    val requestedQuery by sharedViewModel.searchRequest.collectAsStateWithLifecycle()
+    LaunchedEffect(requestedQuery) {
+        requestedQuery?.let { query ->
+            searchText = query
+            isSearchSubmitted = true
+            searchUIType = SearchUIType.SEARCH_RESULTS
+            searchViewModel.searchAll(query)
+            sharedViewModel.requestSearch(null)
+        }
+    }
+
     val focusRequester = remember { FocusRequester() }
 
     var isFocused by rememberSaveable { mutableStateOf(false) }

@@ -1,5 +1,7 @@
 package com.maxrave.simpmusic.ui.theme
 
+import com.maxrave.simpmusic.Platform
+import com.maxrave.simpmusic.getPlatform
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
@@ -21,7 +23,7 @@ import simpmusic.composeapp.generated.resources.poppins_medium
 
 @Composable
 fun fontFamily(): FontFamily =
-    FontFamily(
+    if (getPlatform() == Platform.Desktop) FontFamily.SansSerif else FontFamily(
         Font(Res.font.poppins_medium, FontWeight.Normal, FontStyle.Normal),
     )
 

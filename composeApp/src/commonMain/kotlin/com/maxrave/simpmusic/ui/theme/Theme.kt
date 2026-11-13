@@ -147,7 +147,10 @@ fun AppTheme(
                 seedColor = seedColor,
                 isDark = isDark,
                 style = PaletteStyle.TonalSpot,
-                modifyColorScheme = { cs -> if (isDark) cs else cs.withNeutralLightSurfaces() },
+                modifyColorScheme = { cs ->
+                    val neutral = if (isDark) cs.withNeutralDarkSurfaces() else cs.withNeutralLightSurfaces()
+                    if (themeColorSource == DataStoreManager.THEME_COLOR_DEFAULT) neutral.withHsmAccent(isDark) else neutral
+                },
             )
     // Immersive screens stay dark even at light theme (see [ForceDarkContent]). Resolve their scheme
     // once here instead of letting every such subtree build a palette of its own.
@@ -159,6 +162,7 @@ fun AppTheme(
                 seedColor = seedColor,
                 isDark = true,
                 style = PaletteStyle.TonalSpot,
+                modifyColorScheme = { it.withNeutralDarkSurfaces().withHsmAccent(true) },
             )
         }
     SystemBarAppearanceEffect(isDark)
@@ -259,3 +263,21 @@ fun isDarkTheme(themeMode: String): Boolean =
         DataStoreManager.THEME_MODE_SYSTEM -> isSystemInDarkTheme()
         else -> true
     }
+
+private fun ColorScheme.withNeutralDarkSurfaces(): ColorScheme = copy(
+    background = Color(0xFF171719), onBackground = Color(0xFFF5F5F7),
+    surface = Color(0xFF1C1C1E), onSurface = Color(0xFFF5F5F7),
+    surfaceVariant = Color(0xFF303033), onSurfaceVariant = Color(0xFFB8B8BF),
+    surfaceContainerLowest = Color(0xFF141416), surfaceContainerLow = Color(0xFF202023),
+    surfaceContainer = Color(0xFF232326), surfaceContainerHigh = Color(0xFF2B2B2E),
+    surfaceContainerHighest = Color(0xFF353538), surfaceBright = Color(0xFF3B3B3E),
+    surfaceDim = Color(0xFF171719), outline = Color(0xFF77777F), outlineVariant = Color(0xFF424247),
+)
+
+private fun ColorScheme.withHsmAccent(dark: Boolean): ColorScheme = copy(
+    primary = if (dark) Color(0xFFFF5368) else Color(0xFFE32642),
+    onPrimary = if (dark) Color(0xFF250009) else Color.White,
+    primaryContainer = if (dark) Color(0xFF40232C) else Color(0xFFFFE9ED),
+    onPrimaryContainer = if (dark) Color(0xFFFF9DAB) else Color(0xFF9C1730),
+    surfaceTint = Color(0xFFFA2D48),
+)

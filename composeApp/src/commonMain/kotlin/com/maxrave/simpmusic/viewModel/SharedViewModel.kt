@@ -323,7 +323,7 @@ class SharedViewModel(
                             if (timeline.isLive) return@collectLatest
                             log("Timeline job ${(it.first.total.toString() + it.second.songEntity?.videoId).hashCode()}")
                             if (timeline.total > 0 && nowPlaying.songEntity != null) {
-                                if (nowPlaying.mediaItem.isSong() && nowPlayingScreenData.value.canvasData == null) {
+                                if (!nowPlaying.mediaItem.mediaId.startsWith("file:", ignoreCase = true) && nowPlaying.mediaItem.isSong() && nowPlayingScreenData.value.canvasData == null) {
                                     Logger.w(tag, "Duration is ${timeline.total}")
                                     Logger.w(tag, "MediaId is ${nowPlaying.mediaItem.mediaId}")
                                     getCanvas(nowPlaying.mediaItem.mediaId, (timeline.total / 1000).toInt())
@@ -785,6 +785,10 @@ class SharedViewModel(
 
     // A Library tab asked for from outside the Library screen (a deep link); the screen selects it
     // the next time it composes and clears the request.
+    private val _searchRequest = MutableStateFlow<String?>(null)
+    val searchRequest: StateFlow<String?> = _searchRequest.asStateFlow()
+    fun requestSearch(query: String?) { _searchRequest.value = query }
+
     private val _libraryTabRequest = MutableStateFlow<LibraryChipType?>(null)
     val libraryTabRequest: StateFlow<LibraryChipType?> = _libraryTabRequest.asStateFlow()
 
@@ -1600,6 +1604,11 @@ class SharedViewModel(
                         ?: ""
                 }
             resetLyricsVoteState()
+            if (videoId.startsWith("file:", ignoreCase = true)) {
+                // Match local lyrics by display metadata; never send a filesystem URI to a provider.
+                getLrclibLyrics(song, artist.orEmpty(), duration)
+                return@launch
+            }
             val lyricsProvider = dataStoreManager.lyricsProvider.first()
             when (lyricsProvider) {
                 DataStoreManager.SIMPMUSIC -> {
