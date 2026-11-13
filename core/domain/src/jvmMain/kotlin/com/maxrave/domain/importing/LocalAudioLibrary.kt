@@ -1,6 +1,7 @@
 package com.maxrave.domain.importing
 
 import com.maxrave.domain.data.model.importdata.ImportSong
+import com.maxrave.domain.data.entities.DownloadState
 import java.io.File
 import java.net.URI
 import java.nio.file.Files
@@ -46,6 +47,14 @@ object LocalAudioLibrary {
     }
 
     fun pickedFile(value: String): File = if (value.startsWith("file:", ignoreCase = true)) File(URI(value)) else File(value)
+
+    /** Null delegates a remote track to the downloader; local identities never leave the machine. */
+    fun downloadState(id: String): Int? = when {
+        id.startsWith("file:", ignoreCase = true) ->
+            if (playableFile(id) != null) DownloadState.STATE_DOWNLOADED else DownloadState.STATE_NOT_DOWNLOADED
+        id.startsWith("hsm-unmatched:") -> DownloadState.STATE_NOT_DOWNLOADED
+        else -> null
+    }
 
     fun playableFile(id: String): File? = if (id.startsWith("file:", ignoreCase = true)) {
         runCatching { File(URI(id)).takeIf { it.isFile && it.length() > 0 } }.getOrNull()

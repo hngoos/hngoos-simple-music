@@ -8,6 +8,18 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class LocalAudioLibraryTest {
+    @Test fun localDownloadRequestsResolveWithoutRemoteLookup() {
+        val root = Files.createTempDirectory("hsm-download-test").toFile()
+        try {
+            val audio = root.resolve("song.wav").apply { writeBytes(byteArrayOf(1, 2)) }
+            assertEquals(3, LocalAudioLibrary.downloadState(audio.toURI().toString()))
+            audio.delete()
+            assertEquals(0, LocalAudioLibrary.downloadState(audio.toURI().toString()))
+            assertEquals(0, LocalAudioLibrary.downloadState("hsm-unmatched:session:0"))
+            assertEquals(null, LocalAudioLibrary.downloadState("abcdefghijk"))
+        } finally { root.deleteRecursively() }
+    }
+
     @Test fun copiesAudioAndKeepsItPlayableAfterOriginalIsRemoved() {
         val root = Files.createTempDirectory("hsm-local-test").toFile()
         try {

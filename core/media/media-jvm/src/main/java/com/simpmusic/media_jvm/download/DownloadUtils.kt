@@ -74,6 +74,11 @@ internal class DownloadUtils(
         title: String,
         thumbnail: String,
     ) {
+        com.maxrave.domain.importing.LocalAudioLibrary.downloadState(videoId)?.let { state ->
+            songRepository.updateDownloadState(videoId, state)
+            publishDownloadTask(videoId, state)
+            return
+        }
         val song = songRepository.getSongById(videoId).lastOrNull()
         // Every download path ends here, so this is where a broadcast already known to be live is
         // turned away. One not known yet fails inside YouTube.download, which checks the stream.
