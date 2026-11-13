@@ -1,4 +1,4 @@
-name: HSM desktop
+name: HSM Windows
 
 on:
   pull_request:
@@ -25,14 +25,6 @@ jobs:
             os: windows-latest
             native: windows-x64
             task: packageMsi
-          - name: macOS Apple Silicon
-            os: macos-15
-            native: macos-arm64
-            task: packageDmg
-          - name: macOS Intel
-            os: macos-15-intel
-            native: macos-x64
-            task: packageDmg
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     defaults:
@@ -66,7 +58,7 @@ jobs:
           mkdir -p dist
           while IFS= read -r -d '' package; do
             cp "$package" "dist/HSM-${VERSION}-${HSM_NATIVE}.${package##*.}"
-          done < <(find desktopApp/build/compose/binaries/main -type f \( -name '*.msi' -o -name '*.dmg' \) -print0)
+          done < <(find desktopApp/build/compose/binaries/main -type f -name '*.msi' -print0)
       - uses: actions/upload-artifact@v4
         with:
           name: HSM-${{ matrix.native }}
@@ -91,12 +83,12 @@ jobs:
         with:
           pattern: HSM-*
           path: installers
-      - name: Create draft with all platform installers
+      - name: Create draft with Windows installer
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           TAG: ${{ github.ref_name }}
         run: |
-          mapfile -d '' packages < <(find installers -type f \( -name '*.msi' -o -name '*.dmg' \) -print0)
-          test "${#packages[@]}" -eq 3
+          mapfile -d '' packages < <(find installers -type f -name '*.msi' -print0)
+          test "${#packages[@]}" -eq 1
           gh release create "$TAG" "${packages[@]}" --draft --title "HSM $TAG" --generate-notes

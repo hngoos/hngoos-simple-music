@@ -2,6 +2,8 @@
 
 Last updated: November 13, 2026. Verified application source: `3076a4f585447945e32c4e1952939f426d58cf09`.
 
+Current scope: **Windows x64 only**, following the owner's November 13 decision. macOS development, CI and distribution are paused. Earlier Mac build evidence below is historical; the DMGs have been archived locally and removed from the draft release. Platform source is retained.
+
 ## Automated and packaging evidence
 
 - Final Windows `:domain:jvmTest :media-jvm:compileKotlin`: **BUILD SUCCESSFUL** (10 seconds); 43 JVM tests, zero failures/errors. Coverage includes quoted CSV/TSV, Unicode and UTF-16 documents, recording matching, duplicate/unmatched handling, managed audio copies and local download state.
@@ -21,13 +23,13 @@ Last updated: November 13, 2026. Verified application source: `3076a4f585447945e
 - A native UTF-16 Apple-format TSV imported three ordered entries with a duplicate and an intentionally unavailable track. Both known entries matched YouTube; the unmatched entry remained visible and was reported; there were no network lookup failures.
 - Read-only SQLite inspection confirmed positions 0, 1, 2, the duplicate recording IDs and the unresolved middle entry.
 
-## Publication
+## Publication and archived artifacts
 
 - [GitHub source](https://github.com/hngoos/hngoos-simple-music) contains the vendored core and retained upstream history/licenses.
 - Separate `dev-hngoos-simple-music` and `repo-hngoos-simple-music` checkouts exist. The publication checkout was verified against the pushed application commit.
-- HSM 0.1.0 is a **draft prerelease**. It has not been published publicly. Final installer assets and their digests are listed below.
+- HSM 0.1.0 is a **Windows-only draft prerelease**. It has not been published publicly. The Windows MSI remains attached; previous Mac artifacts are archived locally. Original artifact digests are listed below.
 
-| Draft asset | SHA-256 |
+| Built artifact (Mac artifacts archived) | SHA-256 |
 | --- | --- |
 | `HSM-0.1.0-windows-x64.msi` | `1033eff1144272f59442da907a31010395c0b76e5a79819660b7bec4e9c2bfac` |
 | `HSM-0.1.0-macos-arm64.dmg` | `c0b6e5d620ded79e2295bd04ae17478ba3bc4045cfc0d6b8f6fa79f8a3c1da94` |

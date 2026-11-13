@@ -4,7 +4,7 @@
 
 An independent desktop music app derived from [SimpMusic](https://github.com/maxrave-dev/SimpMusic), with an Apple Music inspired listening view: large current album artwork on the left, synchronized lyrics on the right.
 
-Initial targets are Windows x64 and macOS 15+ on Apple Silicon and Intel. HSM is GPL-3.0 software. See [source provenance](UPSTREAM.md) and [third-party notices](THIRD_PARTY_NOTICES.md).
+The active development and distribution target is **Windows x64**. macOS development, CI builds and distribution are temporarily paused; platform source is retained for a possible return. HSM is GPL-3.0 software. See [source provenance](UPSTREAM.md) and [third-party notices](THIRD_PARTY_NOTICES.md).
 
 ![HSM desktop player with synchronized lyrics](docs/assets/hsm-desktop-player.png)
 
@@ -47,17 +47,11 @@ Windows PowerShell:
 .\gradlew.bat :desktopApp:packageMsi
 ```
 
-MSI packaging requires WiX Toolset 3 on PATH. For macOS, run on the corresponding architecture:
+MSI packaging requires WiX Toolset 3 on PATH.
 
-```bash
-./gradlew :domain:jvmTest
-./gradlew :composeApp:mpvSetupAll -PhsmNativeTargets=macos-arm64 # macos-x64 for Intel
-./gradlew :desktopApp:packageDmg
-```
+Build outputs are under `desktopApp/build/compose/binaries/main`. `.github/workflows/desktop.yml` verifies tests and creates the installer on a native Windows runner. Tags `v*` create a **draft** release after the Windows build succeeds. macOS jobs and DMG release uploads are disabled. See [verification status](docs/VERIFICATION.md).
 
-Build outputs are under `desktopApp/build/compose/binaries/main`. `.github/workflows/desktop.yml` verifies tests and creates installers on native Windows/macOS runners. Tags `v*` create a **draft** release only after all three builds succeed. A configured workflow is not evidence that an installer has passed; see [verification status](docs/VERIFICATION.md).
-
-Official signing/notarization is not configured. The project does not require upstream Sentry or Last.fm secrets (`isFullBuild=false`). Android/Linux modules remain in the source tree but are outside the initial supported distribution targets.
+Official installer signing is not configured. The project does not require upstream Sentry or Last.fm secrets (`isFullBuild=false`). Other platform modules remain in the source tree but are outside the active distribution target.
 
 ## Development layout
 

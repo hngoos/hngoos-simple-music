@@ -1,5 +1,7 @@
 # HSM Desktop Implementation Plan
 
+> Scope update, November 13, 2026: Windows x64 is the only active development and distribution target. macOS builds/distribution are paused; previous completed Mac work below is historical.
+
 > **For agentic workers:** Execute inline with executing-plans; use a fresh reviewer at completion.
 
 **Goal:** Deliver the branded HSM desktop app with an Apple Music inspired

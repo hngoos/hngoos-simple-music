@@ -1,5 +1,7 @@
 # Hngoos Simple Music desktop design
 
+> Scope update, November 13, 2026: the owner has temporarily paused macOS. Active development, CI and distribution target Windows x64 only. Retain Mac source and historical verification; disable Mac jobs and DMG distribution. The original cross-platform design below records earlier decisions.
+
 ## Intent and decisions supplied by the user
 
 Build Hngoos Simple Music (HSM), derived from SimpMusic, for Windows and macOS.
